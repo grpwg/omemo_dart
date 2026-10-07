@@ -854,7 +854,13 @@ class OmemoManager {
       encryptionErrors,
       newRatchets,
       replacedRatchets,
-      successfulEncryptions.values.every((n) => n > 0),
+      // Per *device*, not per JID. See [canSendAllDevicesReached] for the rule and
+      // for the failure it prevents: a partial result is not a partial message.
+      canSendAllDevicesReached(
+        stanza.recipientJids,
+        successfulEncryptions,
+        encryptionErrors,
+      ),
     );
   }
 
@@ -1008,6 +1014,47 @@ class OmemoManager {
   /// Replaces the OPK with id [opkId] and commits the new device to storage. This
   /// function should not be called. It's only useful for rotating OPKs after message
   /// catch-up, because in that case the OPKs are not rotated automatically.
+  /// Refills the one-time-prekey pool up to [target] keys, publishing the
+  /// updated bundle so peers can pick up the new keys.
+  ///
+  /// omemo_dart consumes one OPK per new inbound session. Without a refill
+  /// the pool drains and every later session has to fall back to the
+  /// signed prekey, which costs forward secrecy for that session.
+  ///
+  /// Returns the number of keys added.
+  Future<int> replenishOnetimePrekeys(
+    int target, {
+    Future<void> Function(OmemoBundle bundle)? publish,
+  }) async {
+    var added = 0;
+    for (var i = 0; i < target; i++) {
+      final current = await getDevice();
+      if (current.opks.length >= target) break;
+      // Replace a consumed id with a fresh key; a placeholder id keeps the
+      // loop bounded while staying unique.
+      final placeholder = _nextFreeOpkId(current);
+      await replaceOnetimePrekey(placeholder);
+      added++;
+    }
+    if (added > 0) {
+      _log.info('Replenished $added onetime prekey(s)');
+      await publishDeviceBundle(await getDevice());
+      await publish?.call(await (await getDevice()).toBundle());
+    }
+    return added;
+  }
+
+  /// Finds an OPK id that is free to recycle. Any id not present in the
+  /// current pool works, because replacing a nonexistent key simply adds
+  /// one.
+  int _nextFreeOpkId(OmemoDevice device) {
+    var id = generateRandomOmemoId();
+    while (device.opks.containsKey(id)) {
+      id = generateRandomOmemoId();
+    }
+    return id;
+  }
+
   Future<void> replaceOnetimePrekey(int opkId) async {
     await _deviceLock.synchronized(() async {
       // Replace OPK

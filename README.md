@@ -3,22 +3,28 @@
 [![status-badge](https://ci.polynom.me/api/badges/16/status.svg)](https://ci.polynom.me/repos/16)
 
 `omemo_dart` is a Dart library to help developers of Dart/Flutter XMPP clients to implement
-[OMEMO](https://xmpp.org/extensions/xep-0384.html) in its newest version - currently 0.8.3.
+[OMEMO](https://xmpp.org/extensions/xep-0384.html).
 
-The library provides an implementation of the [X3DH](https://signal.org/docs/specifications/x3dh/)
-key exchange, the [Double Ratchet](https://signal.org/docs/specifications/doubleratchet/) with
-the OMEMO 0.8.3 specific `ENCRYPT`, `DECRYPT` and `KDF_*` functions and a very high-level
-`OmemoSessionManager` that manages all Double Ratchet sessions and provides a clean and simple
-interface for encrypting a message for all known Ratchet sessions we have with a user.
+It ships **two** independent stacks:
 
-This library also has no dependency on any XMPP library. `omemo_dart` instead defines an
-intermediary format for the required data that you, the user, will need to transform to and from
-the stanza format of your preferred XMPP library yourself.
+| Stack | Entry | Protocol | Use |
+|-------|-------|----------|-----|
+| Classic | `package:omemo_dart/omemo_dart.dart` | XEP-0384 **0.9.1** (crypto same as 0.8.3: AES-256-CBC+HMAC, OMEMO protobufs) | PQ / B-track base Double Ratchet; optional `urn:xmpp:omemo:2` |
+| Axolotl | `package:omemo_dart/omemo_dart_axolotl.dart` | XEP-0384 **0.3.0** / Conversations (`eu.siacs.conversations.axolotl`, AES-128-GCM, libsignal) | Interop with Conversations and other legacy clients |
+
+The classic stack provides [X3DH](https://signal.org/docs/specifications/x3dh/), the
+[Double Ratchet](https://signal.org/docs/specifications/doubleratchet/) with OMEMO
+`ENCRYPT` / `DECRYPT` / `KDF_*`, device `label`/`labelsig` helpers (0.9.1), and a high-level
+`OmemoManager`.
+
+This library has no dependency on any XMPP library. Callers transform the intermediary
+key/payload format to their stanza XML themselves.
 
 ## Important Notes
 
 - **Please note that this library has not been audited for its security! Use at your own risk!**
-- This library is not tested with other implementations of OMEMO 0.8.3 as I do not know of any client implementing spec compliant OMEMO 0.8.3. It does, however, work with itself.
+- This library is not tested with other implementations of OMEMO 0.9.1 as I do not know of any client implementing spec compliant OMEMO 0.9.1. It does, however, work with itself.
+- The axolotl stack targets Conversations wire compatibility.
 
 ## Usage
 

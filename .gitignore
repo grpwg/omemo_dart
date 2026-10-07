@@ -9,6 +9,17 @@ build/
 # https://dart.dev/guides/libraries/private-files#pubspeclock.
 pubspec.lock
 
+# protoc_plugin output from protobuf/schema.proto
+*.pb.dart
+*.pbenum.dart
+*.pbjson.dart
+*.pbserver.dart
+
+# Dart codegen
+*.g.dart
+*.freezed.dart
+*.mocks.dart
+
 # NixOS
 .direnv
 .envrc

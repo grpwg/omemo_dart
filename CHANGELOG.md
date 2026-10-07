@@ -75,3 +75,8 @@ This version is a complete rework of omemo_dart!
 ## 0.6.0
 
 - Bump dependencies to fix running with never version of Dart
+- Classic stack: declare XEP-0384 **0.9.1** (crypto unchanged from 0.8.3)
+- `generateRandomOmemoId` never returns 0 (`1 … 2³¹−1`)
+- Add `signDeviceLabel` / `verifyDeviceLabel` / `acceptedDeviceLabel` for 0.9.1 `labelsig`
+- Add parallel **axolotl** stack (`omemo_dart_axolotl.dart`) for OMEMO 0.3.0 / Conversations
+  (AES-128-GCM auth-tag-in-key + libsignal SessionCipher)

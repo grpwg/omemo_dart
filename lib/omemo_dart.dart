@@ -6,6 +6,7 @@ export 'src/helpers.dart';
 export 'src/keys.dart';
 export 'src/omemo/bundle.dart';
 export 'src/omemo/device.dart';
+export 'src/omemo/device_label.dart';
 export 'src/omemo/encrypted_key.dart';
 export 'src/omemo/encryption_result.dart';
 export 'src/omemo/errors.dart';
@@ -14,6 +15,10 @@ export 'src/omemo/omemo.dart';
 export 'src/omemo/ratchet_data.dart';
 export 'src/omemo/ratchet_map_key.dart';
 export 'src/omemo/stanza.dart';
+// The wire types (OMEMOMessage, OMEMOAuthenticatedMessage,
+// OMEMOKeyExchange) appear in this library's public API — ratchetEncrypt
+// returns one — so callers must be able to name them.
+export 'src/protobuf/schema.pb.dart';
 export 'src/trust/base.dart';
 export 'src/trust/btbv.dart';
 export 'src/x3dh/x3dh.dart';
