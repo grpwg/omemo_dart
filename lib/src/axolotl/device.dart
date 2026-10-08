@@ -27,8 +27,7 @@ class AxolotlDevice {
     final store = InMemorySignalProtocolStore(identityKeyPair, registrationId);
 
     final signedPreKeyId = generateRandomOmemoId();
-    final signedPreKey =
-        generateSignedPreKey(identityKeyPair, signedPreKeyId);
+    final signedPreKey = generateSignedPreKey(identityKeyPair, signedPreKeyId);
     await store.storeSignedPreKey(signedPreKeyId, signedPreKey);
 
     final start = generateRandomOmemoId();
@@ -142,8 +141,7 @@ class AxolotlDevice {
     );
     await store.storeSignedPreKey(snap.signedPreKeyId, signed);
     for (final entry in snap.preKeyRecords.entries) {
-      final record =
-          PreKeyRecord.fromBuffer(Uint8List.fromList(entry.value));
+      final record = PreKeyRecord.fromBuffer(Uint8List.fromList(entry.value));
       await store.storePreKey(entry.key, record);
     }
     return AxolotlDevice(
@@ -197,14 +195,11 @@ class AxolotlDeviceSnapshot {
     return AxolotlDeviceSnapshot(
       jid: json['jid'] as String,
       registrationId: json['registrationId'] as int,
-      identityPrivateKey:
-          base64Decode(json['identityPrivateKey'] as String),
+      identityPrivateKey: base64Decode(json['identityPrivateKey'] as String),
       identityPublicKey: base64Decode(json['identityPublicKey'] as String),
       signedPreKeyId: json['signedPreKeyId'] as int,
-      signedPreKeyRecord:
-          base64Decode(json['signedPreKeyRecord'] as String),
+      signedPreKeyRecord: base64Decode(json['signedPreKeyRecord'] as String),
       preKeyRecords: pre,
     );
   }
 }
-

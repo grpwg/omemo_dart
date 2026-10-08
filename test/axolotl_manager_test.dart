@@ -107,7 +107,8 @@ void main() {
   });
 
   test('fingerprint is 66 hex chars (33-byte identity)', () async {
-    final device = await AxolotlDevice.generateNewDevice('x@y.z', preKeyCount: 1);
+    final device =
+        await AxolotlDevice.generateNewDevice('x@y.z', preKeyCount: 1);
     final fp = await device.fingerprint;
     expect(fp.length, 66);
     expect(RegExp(r'^[0-9a-f]+$').hasMatch(fp), isTrue);

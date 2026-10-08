@@ -152,8 +152,7 @@ class AxolotlOmemoManager {
               newSessions.putIfAbsent(jid, () => []).add(deviceId);
             }
 
-            final cipher =
-                SessionCipher.fromStore(_device.store, address);
+            final cipher = SessionCipher.fromStore(_device.store, address);
             final message = await cipher.encrypt(
               Uint8List.fromList(keyMaterial),
             );
